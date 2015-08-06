@@ -2,18 +2,20 @@
 
 # ex1.py is a modified version of ex1.m from the coursera machine learning course
 
-# First exercise: Define a function to call to five the 5D identity matrix
-
 import sys
-import os
 
-def warmUpExercise():
-  print '6'
-  return
+import numpy as np
+
+# warmUpExercise function to return the 5x5 identity matrix
+def warmUpExercise(n):
+  A = np.identity(n)
+  print A
+  
+  #Alternatively could use numpy.eye(5) instead
 
 def main():
-
-  warmUpExercise()
+  n = 5
+  warmUpExercise(n)
 
   return
 
