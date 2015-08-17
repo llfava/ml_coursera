@@ -7,7 +7,7 @@ import sys
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
+import copy
 
 # warmUpExercise function to return the 5x5 identity matrix
 def warmUpExercise(n):
@@ -26,16 +26,32 @@ def plotData(x,y):
   #plt.show()
 
 def hypothesis(x, theta):
-  print x.dot(theta)
   return x.dot(theta)
 
 def computeCost(x,y,theta):
   m = len(y)
+
+  ##This is the loop version of finding J
   cum_sum = 0
   for i in range(0,m):
     cum_sum += (hypothesis(x[i],theta) -y[i])**2
-  cum_sum = (1.0 / (2 * m)) * cum_sum
-  return cum_sum
+  cum_sum = (1.0 / (2 * m)) * cum_sum #This is J
+
+  ##This is the vectorized version of finding J
+  term = hypothesis(x,theta) - y
+  return (term.T.dot(term) / (2 * m))[0,0]#This is J
+  #What is this [0,0] factor for??
+
+
+def gradientDescent(x, y, theta, alpha, iterations):
+  m = len(y)
+  grad = copy.copy(theta)
+
+  for iteration in range(0,iterations):
+    grad -= (alpha / m) * x.T.dot(hypothesis(x,theta) - y)
+
+  return grad
+
 
 # Do part 2.1
 def part2_1():
@@ -51,13 +67,25 @@ def part2_2(data):
   y = y.reshape(m,1)
   X = np.c_[np.ones(m),data[:,0]]
   theta = np.zeros((2,1))
-  print theta
   iterations = 1500
   alpha = 0.01
 
   cost = computeCost(X,y,theta)
+  theta = gradientDescent(X, y, theta, alpha, iterations)
+  print theta  
 
-  
+  predict1 = np.array([1,3.5]).dot(theta)
+  predict2 = np.array([1,7]).dot(theta)
+  print predict1
+  print predict2
+
+  #fig = plt.figure()
+  #ax1 = plt.subplot(111)
+
+  plt.plot(X[:,1], y, 'rx')
+  plt.plot(X[:,1], X.dot(theta), 'b-')
+  plt.show()
+
 def main():
   n = 5
   warmUpExercise(n)
