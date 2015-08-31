@@ -21,9 +21,17 @@ def main():
   m, n = np.shape(data)[0], np.shape(data)[1]-1
   X = np.c_[np.ones(m), data[:,:n]]
   y = data[:,n:n+1] #TODO: Note difference between data[:,n] and data[:,n:n+1] - why is this?
-  print X
 
+  pos = data[data[:,2] == 1]
+  neg = data[data[:,2] == 0]
 
+  ax1 = plt.subplot(111)
+  ax1.set_xlabel("Exam 1 score")
+  ax1.set_ylabel("Exam 2 score")
+  ax1.scatter(pos[:,0], pos[:,1], s=40, c='k', marker='+', label="Admitted")
+  ax1.scatter(neg[:,0], neg[:,1], s=40, c='y', marker='o', label="Not admitted")
+  ax1.legend()
+  plt.show()
 
 
 if __name__ == "__main__":
