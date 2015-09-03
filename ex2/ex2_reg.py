@@ -23,15 +23,33 @@ def plotData(data):
   ax1.axis(v)
   return
 
+def mapFeature(x1, x2):
+  degrees = 6
+  out = np.ones( (np.shape(x1)[0], 1) )
+
+  for i in range(1, degrees+1):
+    for j in range(0, degrees):
+      term1 = x1 ** (i-j)
+      term2 = x2 ** (j)
+      m = np.shape(term1)[0]
+      term = np.reshape((term1 * term2),(m,1))
+      out = np.hstack((out,term))
+  return out
+
 def part2_1():
   data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
   plotData(data)
+  plt.show()
   return
+
+def part2_2():
+  data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
+  X = mapFeature( data[:,0], data[:,1] )
 
 def main():
 
-  part2_1()
-#  plt.show()
+  #part2_1()
+  part2_2()
 
 if __name__ == "__main__":
   main()
