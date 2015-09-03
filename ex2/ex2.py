@@ -21,10 +21,17 @@ def plotData(data):
   ax1.scatter(pos[:,0], pos[:,1], s=40, c='k', marker='+', label="Admitted")
   ax1.scatter(neg[:,0], neg[:,1], s=40, c='y', marker='o', label="Not admitted")
   ax1.legend()
+  v = [30, 100, 30, 100]
+  ax1.axis(v)  
+  return
 
-def part1_1(): #Plot the data
-  data = np.genfromtxt("ex2data1.txt", delimiter=',') #Read in comma separated data
-  plotData(data) 
+def plotBoundary(data, x, theta):
+  plotData(data)
+  plot_x = np.array( [min(x[:,1]), max(x[:,1])] ) #only need to points to plot line
+  plot_y = (-1./theta[2])*(theta[1]*plot_x + theta[0]) #get y-values using y-int form
+  plt.plot( plot_x, plot_y)
+  return
+
 
 def sigmoid(z):
   g = 1.0 / (1.0 + np.exp(-z))
@@ -55,6 +62,10 @@ def findMinTheta(theta, x, y):
   return result.x, result.fun
   #return result[0], result[1]
 
+def part1_1(): #Plot the data
+  data = np.genfromtxt("ex2data1.txt", delimiter=',') #Read in comma separated data
+  plotData(data) 
+
 def part1_2():
   data = np.genfromtxt("ex2data1.txt", delimiter=',') #Read in comma separated data
   m, n = np.shape(data)[0], np.shape(data)[1]-1
@@ -63,6 +74,8 @@ def part1_2():
   theta = np.zeros((n+1,1))
 
   theta, cost = findMinTheta(theta,X,y)
+  plotBoundary(data,X,theta)
+
 
 
 def main():
@@ -70,11 +83,9 @@ def main():
   ## Load data; first two columns contains the exam scores, and the third column
   ## contains the label
 
-  part1_1()
-#  plt.show()
-
+  #part1_1()
   part1_2()
-
+  plt.show()
 
 
 
