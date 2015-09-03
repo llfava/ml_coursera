@@ -9,7 +9,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+import scipy.optimize, scipy.special
 
 def plotData(data):
   pos = data[data[:,2] == 1] #Select X data for y=1
@@ -35,10 +35,25 @@ def computeCost(theta, x, y):
   sum = np.log(sigmoid(x.dot(theta))).T.dot(-y)-np.log(1-sigmoid(x.dot(theta))).T.dot(1-y)
   return (sum / m).flatten()
 
-def calcGradient(theta, x, y):
+def gradientCost(theta, x, y):
   m = len(y)
   sum = x.T.dot(sigmoid(x.dot(theta))-y)
   return (sum / m).flatten()
+
+def costFunction(theta, x, y):
+  cost = computeCost(theta,x,y)
+  grad = gradientCost(theta,x,y)
+  return cost
+
+def findMinTheta(theta, x, y):
+#  result = scipy.optimize.fmin(costFunction, x0=theta, args=(x,y), 
+#                               maxiter=500, full_output=True) 
+#  print result[0], result[1]
+
+  result = scipy.optimize.minimize(costFunction, x0=theta, args=(x,y), method='Nelder-Mead',
+                                   options={'maxiter':500})
+  return result.x, result.fun
+  #return result[0], result[1]
 
 def part1_2():
   data = np.genfromtxt("ex2data1.txt", delimiter=',') #Read in comma separated data
@@ -47,8 +62,8 @@ def part1_2():
   y = data[:,n:n+1] #TODO: Note difference between data[:,n] and data[:,n:n+1] - why is this?
   theta = np.zeros((n+1,1))
 
-  print computeCost(theta,X,y)
-  print calcGradient(theta,X,y)
+  theta, cost = findMinTheta(theta,X,y)
+
 
 def main():
 
