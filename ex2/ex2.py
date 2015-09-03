@@ -32,7 +32,6 @@ def plotBoundary(data, x, theta):
   plt.plot( plot_x, plot_y)
   return
 
-
 def sigmoid(z):
   g = 1.0 / (1.0 + np.exp(-z))
   return g
@@ -62,6 +61,24 @@ def findMinTheta(theta, x, y):
   return result.x, result.fun
   #return result[0], result[1]
 
+def predict(theta, x):
+  m = len(x[:,1])
+
+  p = np.zeros(m)
+
+  for i in range(0,len(x[:,1])-1):
+    if sigmoid(x.dot(theta)[i]) >= 0.5:
+      p[i] = 1.
+    else:
+      p[i] = 0.
+  return p
+
+def compare(y, predicted_y):
+  m = len(y[:,0])
+  y = y.reshape(1,m).flatten()
+  comp = np.isclose(y, predicted_y)
+  return np.count_nonzero(comp)
+
 def part1_1(): #Plot the data
   data = np.genfromtxt("ex2data1.txt", delimiter=',') #Read in comma separated data
   plotData(data) 
@@ -76,14 +93,16 @@ def part1_2():
   theta, cost = findMinTheta(theta,X,y)
   plotBoundary(data,X,theta)
 
+  X_new = np.array( [1,45,85] )
+  predict_new = sigmoid(X_new.dot(theta))
 
+  predicted_y = predict(theta, X)
+  num_correct = compare(y, predicted_y)
+  print num_correct  
 
 def main():
 
-  ## Load data; first two columns contains the exam scores, and the third column
-  ## contains the label
-
-  #part1_1()
+  part1_1()
   part1_2()
   plt.show()
 
