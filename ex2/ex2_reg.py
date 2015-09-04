@@ -42,9 +42,12 @@ def sigmoid(z):
 
 def computeCostReg(theta, x, y, lamda):
   m = len(y)
-  sum = np.log(sigmoid(x.dot(theta))).T.dot(-y)-np.log(1-sigmoid(x.dot(theta))).T.dot(1-y)
-  reg_term = (lamda)*(theta.T.dot(theta)) # Need to check if this works correctly
-  return (sum / m).flatten()
+  hypo = sigmoid(x.dot(theta))
+  term1 = np.log(hypo).T.dot(-y)
+  term2 = np.log(1-hypo).T.dot(1-y)
+  left_hand = (term1 - term2)/m
+  right_hand = (lamda/(2*m))*(theta.T.dot(theta)) # Need to check if this works correctly
+  return (left_hand + right_hand).flatten()
 
 def gradientCostReg(theta, x, y, lamda):
   m = len(y)
@@ -57,8 +60,8 @@ def costFunctionReg(theta, x, y, lamda):
   return cost
 
 def findMinTheta(theta, x, y, lamda):
-  result = scipy.optimize.minimize(costFunction, x0=theta, args=(x,y), method='Nelder-Mead',
-                                   options={'maxiter':500})
+  result = scipy.optimize.minimize(costFunctionReg, x0=theta, args=(x,y,lamda), 
+                                   method='Nelder-Mead', options={'maxiter':500})
   return result.x, result.fun
 
 def part2_1():
@@ -79,9 +82,11 @@ def part2_3():
   n = np.shape(data)[1]-1
   y = data[:,n:n+1]  #hmmm, how many rows in X?
   theta = np.zeros((m,1))
-  lamda = 1 #lambda
+  lamda = 1.0 #lambda
 
-  theta, cost = findMinTheta(theta,X,y,lamda)
+  print computeCostReg( theta, X, y, lamda)
+
+  #theta, cost = findMinTheta(theta,X,y,lamda)
 
   return
 
