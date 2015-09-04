@@ -36,6 +36,31 @@ def mapFeature(x1, x2):
       out = np.hstack((out,term))
   return out
 
+def sigmoid(z):
+  g = 1.0 / (1.0 + np.exp(-z))
+  return g
+
+def computeCostReg(theta, x, y, lamda):
+  m = len(y)
+  sum = np.log(sigmoid(x.dot(theta))).T.dot(-y)-np.log(1-sigmoid(x.dot(theta))).T.dot(1-y)
+  reg_term = (lamda)*(theta.T.dot(theta)) # Need to check if this works correctly
+  return (sum / m).flatten()
+
+def gradientCostReg(theta, x, y, lamda):
+  m = len(y)
+  sum = x.T.dot(sigmoid(x.dot(theta))-y)
+  return (sum / m).flatten()
+
+def costFunctionReg(theta, x, y, lamda):
+  cost = computeCostReg(theta,x,y,lamda)
+  grad = gradientCostReg(theta,x,y,lamda)
+  return cost
+
+def findMinTheta(theta, x, y, lamda):
+  result = scipy.optimize.minimize(costFunction, x0=theta, args=(x,y), method='Nelder-Mead',
+                                   options={'maxiter':500})
+  return result.x, result.fun
+
 def part2_1():
   data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
   plotData(data)
@@ -45,11 +70,27 @@ def part2_1():
 def part2_2():
   data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
   X = mapFeature( data[:,0], data[:,1] )
+  return
+
+def part2_3():
+  data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
+  X = mapFeature( data[:,0], data[:,1] )
+  m =  np.shape(X)[1]
+  n = np.shape(data)[1]-1
+  y = data[:,n:n+1]  #hmmm, how many rows in X?
+  theta = np.zeros((m,1))
+  lamda = 1 #lambda
+
+  theta, cost = findMinTheta(theta,X,y,lamda)
+
+  return
 
 def main():
 
   #part2_1()
   part2_2()
+  part2_3()
+
 
 if __name__ == "__main__":
   main()
