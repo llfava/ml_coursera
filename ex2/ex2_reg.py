@@ -92,12 +92,45 @@ def part2_3():
   print theta, cost
   return
 
+def part2_4():
+  data = np.genfromtxt("ex2data2.txt", delimiter=',') #Read in comma separated data
+  X = mapFeature( data[:,0], data[:,1] )
+  m =  np.shape(X)[1]
+  n = np.shape(data)[1]-1
+  y = data[:,n:n+1]  
+  theta = np.zeros(m)
+
+  lamdas = [0.0, 1.0, 100.0] #lambda values
+
+  for lamda in lamdas:
+    theta, cost = findMinTheta(theta,X,y,lamda)
+
+    plt.text( 0.15, 1.3, 'Lamda %.1f' % lamda )  #Sets a title above the plot
+    plotData(data)
+
+    u = np.linspace( -1., 1.5, 50 )  #Create grid
+    v = np.linspace( -1., 1.5, 50 )  #to find decision boundary
+    z = np.zeros( (len(u), len(v)) ) #z=0 is decision boundary
+
+    for i in range(0, len(u)):
+      for j in range(0, len(v)):
+        mapped = mapFeature( np.array([u[i]]), np.array([v[j]]) )
+        z[i,j] = mapped.dot( theta ) #Put values of theta across grid?
+
+    z = z.transpose()
+
+    u, v = np.meshgrid(u,v) #Creates actual meshgrid for contour plot
+    plt.contour( u, v, z, [0.0, 0.0], label='Decision boundary' )
+
+    plt.show()
+
+
 def main():
 
   #part2_1()
   #part2_2()
-  part2_3()
-
+  #part2_3()
+  part2_4()
 
 if __name__ == "__main__":
   main()
