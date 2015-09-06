@@ -51,15 +51,10 @@ def computeCostReg(theta, x, y, lamda):
 
 def gradientCostReg(theta, x, y, lamda):
   m = len(y)
-  print np.shape(x.T)
-  print np.shape(sigmoid(x.dot(theta)))
-  print np.shape(y.flatten())
   y = y.flatten()
-  grad = (sigmoid(x.dot(theta))-y)
-  print np.shape(grad)
-#  grad[1:] = grad[1:] + ( (theta[1:]*lamda) /m )
-#  return grad
-  return grad.flatten()
+  grad = x.T.dot((sigmoid(x.dot(theta))-y)) / m
+  grad[1:] = grad[1:] + ( (theta[1:]*lamda) / m )
+  return grad
 
 def costFunctionReg(theta, x, y, lamda):
   cost = computeCostReg(theta,x,y,lamda)
