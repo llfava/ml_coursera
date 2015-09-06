@@ -37,14 +37,15 @@ def mapFeature(x1, x2):
   return out
 
 def sigmoid(z):
-  g = 1.0 / (1.0 + np.exp(-z))
+#  g = 1.0 / (1.0 + np.exp(-z))
+  g = scipy.special.expit(z)
   return g
 
 def computeCostReg(theta, x, y, lamda):
   m = len(y)
   hypo = sigmoid(x.dot(theta))
-  term1 = np.log(hypo).T.dot(-y)
-  term2 = np.log(1-hypo).T.dot(1-y)
+  term1 = np.log(hypo).T.dot(-y)  #Get divide by zero warning; should I be worried? 9/6/15
+  term2 = np.log(1-hypo).T.dot(1-y)  #Get divide by zero warning; should I be worried? 9/6/15
   left_hand = (term1 - term2)/m
   right_hand = (lamda/(2*m))*(theta.T.dot(theta)) 
   return (left_hand + right_hand).flatten()
@@ -87,10 +88,8 @@ def part2_3():
 
   lamda = 1.0 #lambda
 
-  print gradientCostReg(theta,X,y,lamda)
-
-#  theta, cost = findMinTheta(theta,X,y,lamda)
-#  print theta, cost
+  theta, cost = findMinTheta(theta,X,y,lamda)
+  print theta, cost
   return
 
 def main():
