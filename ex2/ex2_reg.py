@@ -46,13 +46,20 @@ def computeCostReg(theta, x, y, lamda):
   term1 = np.log(hypo).T.dot(-y)
   term2 = np.log(1-hypo).T.dot(1-y)
   left_hand = (term1 - term2)/m
-  right_hand = (lamda/(2*m))*(theta.T.dot(theta)) # Need to check if this works correctly
+  right_hand = (lamda/(2*m))*(theta.T.dot(theta)) 
   return (left_hand + right_hand).flatten()
 
 def gradientCostReg(theta, x, y, lamda):
   m = len(y)
-  sum = x.T.dot(sigmoid(x.dot(theta))-y)
-  return (sum / m).flatten()
+  print np.shape(x.T)
+  print np.shape(sigmoid(x.dot(theta)))
+  print np.shape(y.flatten())
+  y = y.flatten()
+  grad = (sigmoid(x.dot(theta))-y)
+  print np.shape(grad)
+#  grad[1:] = grad[1:] + ( (theta[1:]*lamda) /m )
+#  return grad
+  return grad.flatten()
 
 def costFunctionReg(theta, x, y, lamda):
   cost = computeCostReg(theta,x,y,lamda)
@@ -80,20 +87,21 @@ def part2_3():
   X = mapFeature( data[:,0], data[:,1] )
   m =  np.shape(X)[1]
   n = np.shape(data)[1]-1
-  y = data[:,n:n+1]  #hmmm, how many rows in X?
-  theta = np.zeros((m,1))
+  y = data[:,n:n+1]  
+  theta = np.zeros(m)
+
   lamda = 1.0 #lambda
 
-  print computeCostReg( theta, X, y, lamda)
+  print gradientCostReg(theta,X,y,lamda)
 
-  #theta, cost = findMinTheta(theta,X,y,lamda)
-
+#  theta, cost = findMinTheta(theta,X,y,lamda)
+#  print theta, cost
   return
 
 def main():
 
   #part2_1()
-  part2_2()
+  #part2_2()
   part2_3()
 
 
