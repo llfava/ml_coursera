@@ -28,7 +28,7 @@ def mapFeature(x1, x2):
   out = np.ones( (np.shape(x1)[0], 1) )
 
   for i in range(1, degrees+1):
-    for j in range(0, degrees):
+    for j in range(0, i+1):
       term1 = x1 ** (i-j)
       term2 = x2 ** (j)
       m = np.shape(term1)[0]
@@ -45,6 +45,12 @@ def computeCostReg(theta, x, y, lamda):
   m = len(y)
   hypo = sigmoid(x.dot(theta))
   term1 = np.log(hypo).T.dot(-y)  #Get divide by zero warning; should I be worried? 9/6/15
+  if np.isnan(term1):
+    print term1
+    print hypo[116]
+    print x.dot(theta)[116]
+    print theta
+    print x[116]
   term2 = np.log(1-hypo).T.dot(1-y)  #Get divide by zero warning; should I be worried? 9/6/15
   left_hand = (term1 - term2)/m
   right_hand = (lamda/(2*m))*(theta.T.dot(theta)) 
@@ -63,8 +69,8 @@ def costFunctionReg(theta, x, y, lamda):
   return cost
 
 def findMinTheta(theta, x, y, lamda):
-  result = scipy.optimize.minimize(costFunctionReg, x0=theta, args=(x,y,lamda), 
-                                   method='Nelder-Mead', options={'maxiter':500})
+  result = scipy.optimize.minimize(costFunctionReg, theta, args=(x,y,lamda), 
+                                   method='BFGS', options={'maxiter':1000, "disp":True})
   return result.x, result.fun
 
 def part2_1():
@@ -86,8 +92,8 @@ def part2_3():
   y = data[:,n:n+1]  
   theta = np.zeros(m)
 
-  lamda = 1.0 #lambda
-
+  lamda = 0.0 #lambda
+   
   theta, cost = findMinTheta(theta,X,y,lamda)
   print theta, cost
   return
@@ -97,21 +103,24 @@ def part2_4():
   X = mapFeature( data[:,0], data[:,1] )
   m =  np.shape(X)[1]
   n = np.shape(data)[1]-1
-  y = data[:,n:n+1]  
+  y = data[:,2]  
   theta = np.zeros(m)
 
   lamdas = [0.0, 1.0, 100.0] #lambda values
 
   for lamda in lamdas:
+
     theta, cost = findMinTheta(theta,X,y,lamda)
 
     plt.text( 0.15, 1.3, 'Lamda %.1f' % lamda )  #Sets a title above the plot
     plotData(data)
 
-    u = np.linspace( -1., 1.5, 50 )  #Create grid
-    v = np.linspace( -1., 1.5, 50 )  #to find decision boundary
-    z = np.zeros( (len(u), len(v)) ) #z=0 is decision boundary
+    # Here is the grid range
+    u = np.linspace( -1., 1.5, 50 )  
+    v = np.linspace( -1., 1.5, 50 )  
 
+    z = np.zeros( (len(u), len(v)) ) #z=0 is decision boundary
+    #Evaluate z = theta*x over the grid
     for i in range(0, len(u)):
       for j in range(0, len(v)):
         mapped = mapFeature( np.array([u[i]]), np.array([v[j]]) )
