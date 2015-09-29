@@ -45,13 +45,12 @@ def computeCost(theta, X, y):
   term1 = np.log(hypo).T.dot(-y)
   term2 = np.log(1-hypo).T.dot(1-y)
   sum = term1 - term2
-
   return (sum / m).flatten()
 
 def gradientCost(theta, X, y):
   m = len(y)
-  sum = X.T.dot(sigmoid(X.dot(theta))-y)
-  return (sum / m).flatten()
+  sum = X.T.dot(sigmoid(X.dot(theta.T))-y)
+  return (sum / m)
 
 def costFunction(theta, X, y):
   cost = computeCost(theta,X,y)
@@ -87,7 +86,13 @@ def part1_3():
 
 
 
-  print computeCost(theta, X, y)  
+  cost = computeCost(theta, X, y)  
+  grad = gradientCost(theta, X, y)  
+
+  print cost
+  print np.shape(cost)
+  print grad
+  print np.shape(grad)
   
 
 def main():
